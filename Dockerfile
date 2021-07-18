@@ -22,8 +22,18 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# copy in laravel files
-# ???
-
 # Set working directory
-WORKDIR /var/www
+WORKDIR /app
+
+# Copy all files into /app
+COPY . /app
+
+# Install Laravel
+RUN composer install
+
+# Start Laravel
+CMD php artisan serve --host=0.0.0.0 --port=80
+
+# Expose Ports
+EXPOSE 80
+EXPOSE 443
