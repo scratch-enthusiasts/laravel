@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('index');
 });
+
+Route::get('/spotifylogin', 'App\Http\Controllers\ApiAuthenticationController@spotifyLogin')->name('spotifyLogin');
+
+Route::get('/spotifycallback', 'App\Http\Controllers\ApiAuthenticationController@spotifyCallback');
