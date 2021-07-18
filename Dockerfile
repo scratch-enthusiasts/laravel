@@ -3,37 +3,25 @@ FROM php:apache
 # copied below from: https://www.digitalocean.com/community/tutorials/how-to-containerize-a-laravel-application-for-development-with-docker-compose-on-ubuntu-18-04
 # might not need to install composer and could just copy repo files into /var/www
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip
+RUN apt-get update \
+ && apt-get install -y git curl zip unzip zlib1g-dev libpng-dev libonig-dev libxml2-dev \
+ && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd \
+ && a2enmod rewrite \
+ && sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf \
+ && mv /var/www/html /var/www/public \
+ && curl -sS https://getcomposer.org/installer \
+  | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+COPY . /var/www/html/
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
-
-# Get latest Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Set working directory
-WORKDIR /app
-
-# Copy all files into /app
-COPY . /app
-
-# Install Laravel
+# Retrieve vendor files
 RUN composer install
 
-# Start Laravel
-CMD php artisan serve --host=0.0.0.0 --port=80
+# Set workdir
+WORKDIR /var/www/
+
+# Make www-data owner of all files
+RUN chown -R www-data:www-data html
 
 # Expose Ports
 EXPOSE 80
-EXPOSE 443
