@@ -19,7 +19,7 @@ class CreateTrackQueueTable extends Migration
             $table->string('preview_url', 255);
             $table->string('artist', 255);
             $table->string('title', 255);
-            $table->integer('length_ms', 9)->default(0);
+            $table->integer('length_ms')->default(0);
             $table->boolean('played')->default(0);
         });
     }
