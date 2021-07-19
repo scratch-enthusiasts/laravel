@@ -21,6 +21,9 @@ RUN composer install
 # Generate key
 RUN php artisan key:generate
 
+# Create db tables
+RUN php artisan migrate
+
 # Set workdir
 WORKDIR /var/www/
 
