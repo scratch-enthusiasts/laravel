@@ -13,10 +13,13 @@ RUN apt-get update \
   | php -- --install-dir=/usr/local/bin --filename=composer
 
 COPY . /var/www/html/
-COPY ./.env.example /ver/www/html/.env
+COPY .env.example /var/www/html/.env
 
 # Retrieve vendor files
 RUN composer install
+
+# Generate key
+RUN php artisan key:generate
 
 # Set workdir
 WORKDIR /var/www/
