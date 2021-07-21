@@ -29,3 +29,5 @@ RUN chown -R www-data:www-data html
 
 # Expose Ports
 EXPOSE 80
+
+ENTRYPOINT ["run.sh"]
