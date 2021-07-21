@@ -21,13 +21,12 @@ RUN composer install
 # Generate key
 RUN php artisan key:generate
 
-# Set workdir
-WORKDIR /var/www/
-
 # Make www-data owner of all files
-RUN chown -R www-data:www-data html
+RUN chown -R www-data:www-data .
+RUN chown root:root run.sh
+RUN chmod +x run.sh
 
 # Expose Ports
 EXPOSE 80
 
-ENTRYPOINT ["run.sh"]
+ENTRYPOINT ["/var/www/html/run.sh"]

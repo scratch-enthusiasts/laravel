@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console;
+namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +12,7 @@ class DbReadyCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'dbready';
+    protected $signature = 'db:ready';
 
     /**
      * The console command description.
@@ -21,12 +21,12 @@ class DbReadyCommand extends Command
      */
     protected $description = 'Waits for the Database to be ready.';
 
-    public function handle(): void
-   {
+    public function handle()
+    {
         do {
             try {
-                $result = DB::select('SHOW TABLES')
-            } catch (\Exception $e) {
+                $result = DB::select('SHOW TABLES');
+            } catch(\Exception $e) {
                 sleep(1);
             }
         } while(!isset($result));

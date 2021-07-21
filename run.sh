@@ -1,2 +1,2 @@
 #!/bin/sh
-php artisan dbready && php artisan migrate
+php artisan db:ready && php artisan migrate
