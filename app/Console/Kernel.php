@@ -24,7 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // In a regular prod environment this wouldn't be acceptable but given the context, it will be fine.
+        $schedule->command('db:ready')->everyMinute();
     }
 
     /**

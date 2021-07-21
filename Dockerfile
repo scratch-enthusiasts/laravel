@@ -12,6 +12,7 @@ RUN apt-get update \
  && curl -sS https://getcomposer.org/installer \
   | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Copy Laravel files into
 COPY . /var/www/html/
 COPY .env.example /var/www/html/.env
 
@@ -23,10 +24,6 @@ RUN php artisan key:generate
 
 # Make www-data owner of all files
 RUN chown -R www-data:www-data .
-RUN chown root:root run.sh
-RUN chmod +x run.sh
 
 # Expose Ports
 EXPOSE 80
-
-ENTRYPOINT ["/var/www/html/run.sh"]
