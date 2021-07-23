@@ -13,15 +13,17 @@ class CreateTrackQueueTable extends Migration
      */
     public function up()
     {
-        Schema::create('track_queue', function (Blueprint $table) {
-            $table->increments('track_id');
-            $table->string('uri', 255);
-            $table->string('preview_url', 255);
-            $table->string('artist', 255);
-            $table->string('title', 255);
-            $table->integer('length_ms', 9)->default(0);
-            $table->boolean('played')->default(0);
-        });
+        if(!Schema::hasTable('track_queue')) {
+            Schema::create('track_queue', function (Blueprint $table) {
+                $table->increments('track_id');
+                $table->string('uri', 255);
+                $table->string('preview_url', 255);
+                $table->string('artist', 255);
+                $table->string('title', 255);
+                $table->integer('length_ms')->default(0);
+                $table->boolean('played')->default(0);
+            });
+        }
     }
 
     /**
