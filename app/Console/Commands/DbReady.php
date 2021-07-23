@@ -25,10 +25,14 @@ class DbReadyCommand extends Command
     {
         do {
             try {
-                $result = DB::select('SHOW TABLES');
+                $result = DB::select('SELECT TRUE');
             } catch(\Exception $e) {
                 sleep(1);
             }
         } while(!isset($result));
+
+        \Artisan::call('migrate', [
+            '--force' => true,
+        ]);
     }
 }
