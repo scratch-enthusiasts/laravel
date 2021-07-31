@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class ApiAuthenticationController extends Controller
 {
@@ -12,10 +13,38 @@ class ApiAuthenticationController extends Controller
         exit; 
     }
 
-    // Callback function after logging in to spotify api, will return an access code and refresh code
+    // Callback function after logging in to spotify api, will return an access code
     function spotifyCallback() {
         if(isset($_GET['code']) ){
-            dd($_GET['code']);
+            session(['spotifyCode' => $_GET['code']]);
+            $this->getSpotifyAccessToken();
+            dd(session()->all());
         }
     }
+
+    // Gets a user's accessToken and refreshToken, both are needed in future api calls
+    function getSpotifyAccessToken() {
+        $spotifyEncoded = base64_encode("".env('SPOTIFY_CLIENT_ID').":".env('SPOTIFY_CLIENT_SECRET'));
+        
+        $data = Http::asForm()->withHeaders([
+            'Authorization' => 'Basic '.$spotifyEncoded,
+        ])->post('https://accounts.spotify.com/api/token', [
+            'grant_type' => 'authorization_code',
+            'code' => session('spotifyCode'),
+            'redirect_uri' => 'http://localhost/music-player/public/spotifycallback',
+        ]);
+        
+        $dataJSON = $data->json();
+
+        if(isset($dataJSON['error']['status'])) {
+            if($dataJSON['error']['status'] == '401' || $dataJSON['error']['status'] == '400') {
+                Session::forget('spotifyCode');
+                return redirect('/');
+            }
+        }
+
+        session(['spotifyAccess' => $dataJSON['access_token']]);
+        session(['spotifyRefresh' => $dataJSON['refresh_token']]); 
+    }
+
 }
