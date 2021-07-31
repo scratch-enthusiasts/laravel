@@ -8,3 +8,9 @@ Move this project folder to your webserver/XAMPP web root (XAMPP/htdocs or /var/
 ```
 composer install
 ```
+
+Next to get the frontend dependencies, including tailwind run
+
+```
+npm install
+```
